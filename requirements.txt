@@ -1,0 +1,30 @@
+# PyPortScan Requirements
+# ======================
+# No external dependencies required!
+# This project uses only Python standard library modules.
+
+# Python Version Requirement:
+# Python 3.7 or higher is required.
+# Tested on: Python 3.8, 3.9, 3.10, 3.11, 3.12
+
+# Standard Library Modules Used:
+# - argparse: Command-line argument parsing
+# - socket: Network socket operations for TCP connections
+# - threading: Multi-threaded execution support
+# - queue: Thread-safe queue for work distribution
+# - datetime: Timestamp generation for output files
+# - time: Timing functions for performance metrics
+# - re: Regular expressions for port range parsing
+# - sys: System utilities for exit codes
+
+# Installation:
+# No pip install needed! Just ensure Python 3.7+ is installed.
+# 
+# To verify your Python version:
+#   python --version
+#   
+# To run the scanner:
+#   python scanner.py localhost 1-1000
+#
+# To run tests:
+#   python test_scanner.py
