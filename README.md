@@ -16,42 +16,61 @@ A fast, efficient, and professional port scanner written in Python with zero ext
 
 ## Installation
 
-No installation required! Just ensure you have **Python 3.7 or higher** installed.
+PyPortScan can be installed as a system-wide `pyportscan` command or run directly.
+
+### Quick Install (Recommended)
 
 ```bash
-# Check your Python version
-python --version
+chmod +x install.sh
+sudo ./install.sh
+```
 
-# Clone the repository (optional, or just copy the files)
-git clone https://github.com/logiclinguist8989/PyPortScan.git
-cd PyPortScan
+This installs PyPortScan as a global command. After installation, use `pyportscan` from anywhere.
 
-# Make the script executable (Linux/Mac)
-chmod +x scanner.py test_scanner.py
+### Other Installation Methods
+
+- **Makefile**: `make install` or `make install-user`
+- **Manual**: `sudo cp scanner.py /usr/local/bin/pyportscan && sudo chmod +x /usr/local/bin/pyportscan`
+- **Development**: Create symlink `sudo ln -s $(pwd)/scanner.py /usr/local/bin/pyportscan`
+- **Quick test**: Create alias `alias pyportscan="python3 $(pwd)/scanner.py"`
+
+For detailed instructions, see [INSTALLATION.md](INSTALLATION.md)
+
+### Direct Execution
+
+If you prefer not to install, run directly:
+
+```bash
+chmod +x scanner.py
+python3 scanner.py <target> <ports> [options]
 ```
 
 ## Quick Start
 
+After installation, use the `pyportscan` command:
+
 ```bash
-# Basic scan: localhost, ports 1-1000
-python scanner.py localhost 1-1000
+# Basic scan
+pyportscan localhost 1-1000
 
 # Scan specific ports with banner grabbing
-python scanner.py 192.168.1.1 22,80,443,3306,8080 --banner
+pyportscan 192.168.1.1 22,80,443,3306
 
-# Advanced: custom threads, timeout, and file export
-python scanner.py example.com 1-10000 --threads 200 --timeout 1 --banner -o results.txt
+# Advanced: custom threads and file export
+pyportscan example.com 1-10000 --threads 200 --banner -o results.txt
 
 # Get help
-python scanner.py --help
+pyportscan --help
 ```
+
+For more examples, see [QUICKSTART.md](QUICKSTART.md)
 
 ## Usage
 
 ### Command Syntax
 
 ```
-python scanner.py <target> <ports> [options]
+pyportscan <target> <ports> [options]
 ```
 
 ### Arguments
@@ -65,63 +84,20 @@ python scanner.py <target> <ports> [options]
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--threads NUM` | Number of concurrent threads | 100 |
+| `--threads N` | Number of concurrent threads | 100 |
 | `--timeout SEC` | Connection timeout in seconds | 2 |
 | `--banner` | Attempt to grab service banners | Disabled |
 | `-o, --output FILE` | Save results to file | (stdout only) |
 
-## Examples
+### Examples
 
-### Example 1: Scan localhost, ports 1-100
-```bash
-python scanner.py localhost 1-100
-```
-
-Output:
-```
-[*] Starting scan on localhost
-[*] Scanning 100 ports with 100 threads
-[*] Scan completed in 0.45 seconds
-[*] Ports scanned: 100
-[*] Open ports found: 1
-
-Open Ports:
-  Port 80
-```
-
-### Example 2: Scan with banner grabbing
-```bash
-python scanner.py 192.168.1.1 80,443,8080 --banner
-```
-
-Output:
-```
-[*] Starting scan on 192.168.1.1
-[*] Scanning 3 ports with 100 threads
-[*] Banner grabbing enabled
-[*] Scan completed in 0.12 seconds
-[*] Ports scanned: 3
-[*] Open ports found: 2
-
-Open Ports:
-  Port 80: HTTP/1.1 200 OK
-  Port 8080: HTTP/1.1 404 Not Found
-```
-
-### Example 3: Scan with file export
-```bash
-python scanner.py example.com 1-1000 --threads 200 --timeout 1 --banner -o scan_results.txt
-```
-
-### Example 4: Scan custom port list
-```bash
-python scanner.py 192.168.1.0 22,25,80,110,143,443,465,587,993,995,3306,3389
-```
-
-### Example 5: Full network scan with options
-```bash
-python scanner.py 192.168.1.1 1-65535 --threads 500 --timeout 1 --banner -o full_scan.txt
-```
+See [QUICKSTART.md](QUICKSTART.md) for detailed usage examples including:
+- Single port scans
+- Port ranges and lists
+- Banner grabbing
+- Multi-threading optimization
+- File export
+- Real-world scenarios
 
 ## Performance
 
@@ -137,22 +113,22 @@ Typical scanning performance (varies by network and target):
 
 **Note**: Speed depends on network latency, target response time, and firewall rules.
 
-## Input Validation Examples
+## Input Validation
 
 The scanner validates inputs before scanning:
 
 ```bash
 # Valid inputs
-python scanner.py 192.168.1.1 1-1000          # Valid range
-python scanner.py localhost 22,80,443          # Valid port list
-python scanner.py example.com 80               # Valid single port
-python scanner.py ::1 1-1000                   # Valid IPv6
+pyportscan 192.168.1.1 1-1000          # Valid range
+pyportscan localhost 22,80,443          # Valid port list
+pyportscan example.com 80               # Valid single port
+pyportscan ::1 1-1000                   # Valid IPv6
 
 # Invalid inputs (will show error)
-python scanner.py 999.999.999.999 1-1000      # Invalid IP
-python scanner.py localhost 1-70000            # Port 70000 exceeds max (65535)
-python scanner.py localhost 100-50             # Start > end
-python scanner.py localhost -50                # Negative port
+pyportscan 999.999.999.999 1-1000      # Invalid IP
+pyportscan localhost 1-70000            # Port exceeds max (65535)
+pyportscan localhost 100-50             # Start > end
+pyportscan localhost -50                # Negative port
 ```
 
 ## Error Handling
@@ -221,63 +197,51 @@ Potential features for future versions:
 - [ ] Custom scan profiles
 - [ ] Web UI dashboard
 
+## Documentation
+
+Complete documentation is available in the following files:
+
+- **[INSTALLATION.md](INSTALLATION.md)** - Installation and uninstallation guide with 5 different methods
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick reference with usage examples and tips
+- **[README.md](README.md)** - This file with features and technical details
+
 ## Troubleshooting
 
-### Issue: All ports appear closed even though services are running
+### Issue: Unable to locate pyportscan command
 
-**Solution**: Check if a firewall is blocking connections. Try:
-- Increasing `--timeout` value
-- Reducing `--threads` to allow proper connection handling
-- Whitelisting the scanning machine's IP
+**Solution**: Ensure the script is installed or in your PATH. See [INSTALLATION.md](INSTALLATION.md) for troubleshooting.
 
-### Issue: Banner grabbing returns empty/incomplete banners
+### Issue: All ports appear closed
 
-**Solution**: This is normal. Not all services respond immediately:
-- Some services require specific protocol commands
-- HTTP services may require proper headers
+**Solution**: Check if a firewall is blocking connections:
 - Try increasing `--timeout` value
-
-### Issue: Scanner hangs or is very slow
-
-**Solution**:
-- Reduce `--threads` value (too many threads can overwhelm network)
-- Increase `--timeout` to allow more time per connection
-- Try scanning fewer ports (`1-1000` instead of `1-65535`)
 - Check network connectivity to target
+- Try reducing `--threads` value
 
-### Issue: Permission denied when writing output file
+### Issue: Permission denied
 
-**Solution**: Ensure write permissions in current directory:
+**Solution**: Ensure the script has execute permissions:
 ```bash
-chmod 755 .
-python scanner.py localhost 1-1000 -o results.txt
+chmod +x /usr/local/bin/pyportscan
 ```
 
-### Issue: Target resolution failed
-
-**Solution**: Check hostname is resolvable:
-```bash
-# Linux/Mac
-nslookup example.com
-ping example.com
-
-# Windows
-nslookup example.com
-ping example.com
-```
+For more troubleshooting, see [INSTALLATION.md](INSTALLATION.md).
 
 ## Testing
 
 Run the included test suite:
 
 ```bash
-python test_scanner.py
+python3 test_scanner.py
 ```
 
-This tests:
-- Input validation (valid/invalid port ranges)
-- Port scanning on localhost
-- Results formatting
+Or using Makefile:
+
+```bash
+make test
+```
+
+This tests input validation, port scanning, and results formatting.
 
 ## Architecture
 
@@ -303,6 +267,17 @@ Pull requests and issues are welcome! Feel free to fork, modify, and improve.
 Created by Ayush Hamal [@logiclinguist8989](https://github.com/logiclinguist8989)
 
 ## Changelog
+
+### Version 1.1.0 (2026-02-12)
+- Added system-wide installation support (`pyportscan` command)
+- Added install.sh automated installation script
+- Added uninstall.sh for safe removal
+- Added Makefile with flexible installation options
+- Created comprehensive documentation:
+  - INSTALLATION.md: Detailed install/uninstall guide
+  - QUICKSTART.md: Quick usage reference
+- Consolidated documentation to reduce redundancy
+- Updated README for cleaner navigation
 
 ### Version 1.0.0 (2024-12-20)
 - Initial release
